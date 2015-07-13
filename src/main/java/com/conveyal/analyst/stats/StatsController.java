@@ -90,9 +90,41 @@ public class StatsController {
                 filters.add(new StatsStore.InvertedSet<>(StatsMain.store.isochrone, StatsMain.store.data));
         }
 
+        if (filters.isEmpty())
+            return StatsMain.store.data.values();
+
         Collection<Long> ret = StatsStore.intersect(filters);
 
         return ret.stream().map(id -> StatsMain.store.data.get(id))
                 .collect(Collectors.toList());
+    }
+
+    /** get all the unique values for the filters */
+    public static Object values (Request req, Response res) {
+        Values ret = new Values();
+        ret.commit = StatsMain.store.commit.stream()
+                .map(c -> c.a)
+                .collect(Collectors.toSet());
+
+        ret.instanceType = StatsMain.store.instanceType.stream()
+                .map(c -> c.a)
+                .collect(Collectors.toSet());
+
+        ret.graphId = StatsMain.store.graphId.stream()
+                .map(c -> c.a)
+                .collect(Collectors.toSet());
+
+        ret.jobId = StatsMain.store.jobId.stream()
+                .map(c -> c.a)
+                .collect(Collectors.toSet());
+
+        return ret;
+    }
+
+    public static class Values {
+        public Set<String> commit;
+        public Set<String> instanceType;
+        public Set<String> graphId;
+        public Set<String> jobId;
     }
 }

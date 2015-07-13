@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analyst Statistics Dashboard</title>
+    <link rel="stylesheet" href="c3/c3.min.css" />
+    <script src="d3.min.js"></script>
+    <script src="c3/c3.min.js"></script>
+</head>
+<body>
+    <div id="chart">
+      <div id="pie"></div>
+    </div>
+
+    <div id="filters">
+      <p>
+        <label for="commit">OTP Commit</label>
+        <select id="commit">
+          <option>-all-</option>
+        </select>
+      </p>
+      <p>
+        <label for="instanceType">AWS Instance Type</label>
+        <select id="instanceType">
+          <option>-all-</option>
+        </select>
+      </p>
+      <p>
+        <label for="graphId">Graph ID</label>
+        <select id="graphId">
+          <option>-all-</option>
+        </select>
+      </p>
+      <p>
+        <label for="jobId">Job ID</label>
+        <select id="jobId">
+          <option>-all-</option>
+        </select>
+      </p>
+
+      <p>
+        <label for="single">Analysis Type</label>
+        <select id="single">
+          <option>-all-</option>
+          <option value="true">Single-point</option>
+          <option value="false">Multi-point</option>
+        </select>
+      </p>
+
+      <p>
+        <label for="isochrone">Output type</label>
+        <select id="isochrone">
+          <option>-all-</option>
+          <option value="true">Isochrones</option>
+          <option value="false">Accessibility</option>
+        </select>
+      </p>
+    </div>
+
+    <script src="stats.js"></script>
+</body>
+</html>

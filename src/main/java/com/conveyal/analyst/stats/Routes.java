@@ -16,6 +16,7 @@ public class Routes {
 
         // and the API
         get("/stats", StatsController::stats, mapper::writeValueAsString);
-        after("/stats", (q, s) -> s.type("application/json"));
+        get("/values", StatsController::values, mapper::writeValueAsString);
+        after((q, s) -> s.type("application/json"));
     }
 }
