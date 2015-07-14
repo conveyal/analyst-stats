@@ -36,7 +36,11 @@ StatsDashboard.prototype.populateFilters = function () {
 
       d3.selectAll('#filters select').on('change', function () {
         instance.update();
-      })
+      });
+
+      d3.selectAll('#refresh').on('click', function () {
+        instance.update();
+      });
   });
 };
 
