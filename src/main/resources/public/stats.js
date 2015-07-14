@@ -51,6 +51,9 @@ StatsDashboard.prototype.update = function () {
       qs.push(x + '=' + y);
   });
 
+  // http://stackoverflow.com/questions/14422198
+  d3.select('#charts').selectAll('div').remove();
+
   d3.json('stats?' + qs.join('&'), function (err, data) {
     var pie = c3.generate({
       data: {
@@ -62,9 +65,43 @@ StatsDashboard.prototype.update = function () {
           ['Result sets'].concat(data.map(function (d) { return d.resultSets; }))
         ],
         type: 'pie',
-        bindTo: '#pie'
       }
     });
+    d3.select('#charts').node().appendChild(pie.element);
+
+    // do kernel density estimation for the compute time after applying filters
+    var compute = data.map(function (d) { return d.compute / 1000; });
+    var max = Math.max.apply(this, compute);
+    // in 1ms bins
+    var x = d3.range(0, max, 0.001);
+    var kde = science.stats.kde().sample(compute)(x).map(function (d) { return d[1]; });
+
+    var line = c3.generate({
+      data: {
+        x: 'x',
+        columns: [
+          ['x'].concat(x),
+          ['Total compute time'].concat(kde)
+        ]
+      },
+      axis: {
+        x: {
+          label: 'Seconds',
+
+        },
+        y: {
+          show: false,
+          min: 0
+        }
+      },
+      legend: {
+        show: false
+      }
+    });
+    d3.select('#charts').node().appendChild(line.element);
+
+    d3.select('#charts').append('div')
+      .text('viewing ' + compute.length + ' jobs');
   });
 };
 

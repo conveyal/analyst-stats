@@ -5,13 +5,19 @@
     <link rel="stylesheet" href="c3/c3.min.css" />
     <script src="d3.min.js"></script>
     <script src="c3/c3.min.js"></script>
+    <!-- kernel density estimation -->
+    <script src="science.v1.min.js"></script>
+
+    <style type="text/css">
+      /* Hide the circles on the kde chart */
+      #charts .c3-circle { display: none }
+    </style>
 </head>
 <body>
-    <div id="chart">
-      <div id="pie"></div>
+    <div id="charts" style="width: 800px; float: left">
     </div>
 
-    <div id="filters">
+    <div id="filters" style="width: 500px; float: left">
       <p>
         <label for="commit">OTP Commit</label>
         <select id="commit">
