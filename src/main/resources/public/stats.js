@@ -70,7 +70,7 @@ StatsDashboard.prototype.update = function () {
     d3.select('#charts').node().appendChild(pie.element);
 
     // do kernel density estimation for the compute time after applying filters
-    var compute = data.map(function (d) { return d.compute / 1000; });
+    var compute = data.map(function (d) { return (d.total - d.graphBuild - d.stopTreeCaching) / 1000; });
     var max = Math.max.apply(this, compute);
     // in 1ms bins
     var x = d3.range(0, max, 0.001);
