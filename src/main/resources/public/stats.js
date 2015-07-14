@@ -38,8 +38,12 @@ StatsDashboard.prototype.populateFilters = function () {
         instance.update();
       });
 
-      d3.selectAll('#refresh').on('click', function () {
+      d3.select('#refresh').on('click', function () {
         instance.update();
+      });
+
+      d3.select('#download').on('click', function () {
+        instance.downloadCsv();
       });
   });
 };
@@ -59,7 +63,9 @@ StatsDashboard.prototype.update = function () {
   d3.select('#charts').selectAll('div').remove();
   d3.select('#charts').append('div').append('h3').text('Makeup of compute time');
 
-  d3.json('stats?' + qs.join('&'), function (err, data) {
+  this.queryString = qs.join('&');
+
+  d3.json('stats?' + this.queryString, function (err, data) {
     var pie = c3.generate({
       data: {
         columns: [
@@ -110,6 +116,10 @@ StatsDashboard.prototype.update = function () {
     d3.select('#charts').append('div')
       .text('viewing ' + compute.length + ' jobs');
   });
+};
+
+StatsDashboard.prototype.downloadCsv = function () {
+  window.location = 'csv?' + this.queryString;
 };
 
 new window.StatsDashboard();
