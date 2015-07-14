@@ -53,6 +53,7 @@ StatsDashboard.prototype.update = function () {
 
   // http://stackoverflow.com/questions/14422198
   d3.select('#charts').selectAll('div').remove();
+  d3.select('#charts').append('div').append('h3').text('Makeup of compute time');
 
   d3.json('stats?' + qs.join('&'), function (err, data) {
     var pie = c3.generate({
@@ -75,6 +76,8 @@ StatsDashboard.prototype.update = function () {
     // in 1ms bins
     var x = d3.range(0, max, 0.001);
     var kde = science.stats.kde().sample(compute)(x).map(function (d) { return d[1]; });
+
+    d3.select('#charts').append('div').append('h3').text('Distribution of total compute time (less graph building and stop tree caching)')
 
     var line = c3.generate({
       data: {
