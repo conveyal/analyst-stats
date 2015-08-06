@@ -1,0 +1,42 @@
+language: java
+
+# Analyst Stats requires Java 8 and Travis doesn't (yet) support OpenJDK 8
+jdk:
+  - oraclejdk8
+
+# Run on container based infrastructure (allows caching &c.)
+sudo: false
+
+# Deploy just the shaded jar, put it in a folder by itself with an appropriate name
+before_deploy:
+  - mkdir shaded
+  # tests have already been run
+  - mvn package -DskipTests
+  - mv target/analyst-stats.jar "shaded/analyst-stats-${TRAVIS_BRANCH}.jar"
+
+# Deploy artifacts to S3
+deploy:
+  provider: s3
+  bucket: analyst-server
+  skip_cleanup: true
+
+  # anyone can read, this is an open-source project
+  acl: public_read
+
+  # upload from the specialized directory we just made
+  local_dir: shaded
+
+  # deploy all branches . . .
+  all_branches: true
+
+  # Encrypted AWS access info
+  # Travis generates a private key per repository. You can then encrypt values with the public key so only Travis can decrypt them
+  access_key_id:
+    secure: "LPhfWEiBTJv5/e2ErfBuOGW/mJBThIreUBU+41+zLoZerqxrDKDKCMKAdI+KVFwIQKtaMNqfOfCA4MozrzIJ7Cl9p6EtdQyFPTCHe896wGNdLz8H7xctSDjBhFuWy58ZEI0GtMyNBT7MV9JxQNP/2pPggnq/Vn12Yu4u7dD6F/quo1l5wqpbUISHexuJjSHqATIQcfttTB4FF6plZvbR9vnH1cNLgjTeQ4N5mcPWQDBmJN2E3SiyUTwGPeqg/36XT6/32CoOIvwS8K2oMU6TBM9SJgd4xbu4Zum2JR+MvO12kAVZETHmdVTePmvVNz2+7fZr534BgCTGuvbQHJI4PF6kdZUbuQkF6htwZbsylLjbLVMOpZDcRA59JeeeOVnAoXfTxjDUB8CZuxIRkS3gG49/gof7ALJU0n4nNvfVtCt4X+Hjs6YhHb1sSMAA5TTmMOc9cy/O2zZUIhrHZvAerQBA96y4pmopLLqky3A0wu4GZEfT+275Ncbxi7IHVyAl89lleiStGXYDPXmPykUqk56hk0oiCl3oX0NyyS785uWqVmsy2pTUrVRUgOiJbC9CyZyYsW32DpbFp+Z7ddqvHAnFXosa/9WJgifrmqeQ6DbeN9jMrMFdrvyI5kKmAdVb2aq4D5qTPuDgZRJo2fmT4COSMEFLXTz7ch7CvZpnUJM="
+  secret_access_key:
+      secure: "JwtJIuXvJXkI06mst8XyHx8BwIRcp161ljWWw+TGmBHEYdeauifkaM+kGbE4sGiyMM2Yigj0lHL0aaK/U4JEQFf4iMPtM7IvHHVcNx+41EK6LbHWjvwOAU2knhZvVZ2vrPAOonpn+S+gyiWL7HzBUoPVznv/eICS51cynvhGVsNkW3NNcu2bg5O2n9mp+1+o2bBSpNP1jfMhAIgfPlhhWFc5lgfbO7iNcYkB7Kc1eqIvpPrEorKsSIujgMTMg32wi5sCfaIrcsvEVHqzPsNInhHe/f1ssrBsMDiwHeppfZfpeCeFCayVWMgy1+TPPyWBYzR3CC2zUi0ZqJIr7GowZ0NR1uvus0ACwK1Ik86ljw6G+IPiSgBe5lSMLA3M33+C7ywVpO3U6B8W7iaMumedREJGFQ+7AGQNErDbhQ94CdV1x6tu5AWWXUvAGgR6AfO8ICM3+UnNuQpW9TSMXsZaeI4xwB/2mXTVrPKvSCML6hVKapxG3T1xJGjFSid9XYArsbVyBdS07p14HPMKycNPy08FxOlQVoJDls25xG4DCUsa76fHW7SkQK9scK/ySRZdr7Waz62dT4K3GmHTuv/3UyJNuZH+sSj5JbnmcewgjgE3t97hkgm3mEyh0T1pM8pAZ545WonBWAV+0L59XLc7SaDFp1WROjOL2IhwqndRbnU="secure: "JwtJIuXvJXkI06mst8XyHx8BwIRcp161ljWWw+TGmBHEYdeauifkaM+kGbE4sGiyMM2Yigj0lHL0aaK/U4JEQFf4iMPtM7IvHHVcNx+41EK6LbHWjvwOAU2knhZvVZ2vrPAOonpn+S+gyiWL7HzBUoPVznv/eICS51cynvhGVsNkW3NNcu2bg5O2n9mp+1+o2bBSpNP1jfMhAIgfPlhhWFc5lgfbO7iNcYkB7Kc1eqIvpPrEorKsSIujgMTMg32wi5sCfaIrcsvEVHqzPsNInhHe/f1ssrBsMDiwHeppfZfpeCeFCayVWMgy1+TPPyWBYzR3CC2zUi0ZqJIr7GowZ0NR1uvus0ACwK1Ik86ljw6G+IPiSgBe5lSMLA3M33+C7ywVpO3U6B8W7iaMumedREJGFQ+7AGQNErDbhQ94CdV1x6tu5AWWXUvAGgR6AfO8ICM3+UnNuQpW9TSMXsZaeI4xwB/2mXTVrPKvSCML6hVKapxG3T1xJGjFSid9XYArsbVyBdS07p14HPMKycNPy08FxOlQVoJDls25xG4DCUsa76fHW7SkQK9scK/ySRZdr7Waz62dT4K3GmHTuv/3UyJNuZH+sSj5JbnmcewgjgE3t97hkgm3mEyh0T1pM8pAZ545WonBWAV+0L59XLc7SaDFp1WROjOL2IhwqndRbnU="
+
+# Save the maven cache to speed up builds
+cache:
+  directories:
+    - "$HOME/.m2/repository"
