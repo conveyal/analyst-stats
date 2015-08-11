@@ -19,22 +19,21 @@ before_deploy:
   - mkdir shaded
   # tests have already been run
   - mvn package -DskipTests
-  - mv target/analyst-stats.jar "shaded/analyst-stats-${TRAVIS_BRANCH}.jar"
+  - mv target/analyst-stats.jar shaded/
+  - cp -r ../scripts .
+  - cp ../appspec.yml .
+  - mkdir ../deploy
+  - zip -r "../deploy/analyst-stats-${TRAVIS_BRANCH}.zip" *
 
 # Deploy artifacts to S3
 deploy:
   provider: s3
-  bucket: analyst-server
+  bucket: analyst-codedeploy-eu
   skip_cleanup: true
-
-  # anyone can read, this is an open-source project
-  acl: public_read
+  region: eu-west-1
 
   # upload from the specialized directory we just made
-  local_dir: shaded
-
-  # deploy all branches . . .
-  all_branches: true
+  local_dir: deploy
 
   # Encrypted AWS access info
   # Travis generates a private key per repository. You can then encrypt values with the public key so only Travis can decrypt them
