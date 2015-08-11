@@ -22,8 +22,9 @@ public class StatsMain {
     public static void main (String... args) throws Exception {
             LOG.info("Welcome to Transport Analyst Statistics Collector by conveyal");
             LOG.info("Reading properties . . .");
-            // TODO don't hardwire
-            FileInputStream in = new FileInputStream(new File("application.conf"));
+            // config file specified on command linecd
+            String infile = args.length > 0 ? args[0] : "application.conf";
+            FileInputStream in = new FileInputStream(new File(infile));
             config.load(in);
             in.close();
 
