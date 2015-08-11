@@ -4,6 +4,10 @@ os: linux
 # amazon requires this be specified and set to 0.0 or the whole Enterprise comes apart, which makes Captain Kirk unhappy
 version: 0.0
 
+files:
+  - source: analyst-stats.jar
+    destination: /opt/analyst-stats.jar
+
 hooks:
   ApplicationStart:
     - location: scripts/start.sh
