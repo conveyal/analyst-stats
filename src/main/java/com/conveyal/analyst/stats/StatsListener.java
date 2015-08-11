@@ -1,5 +1,7 @@
 package com.conveyal.analyst.stats;
 
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,9 +20,18 @@ public class StatsListener implements Runnable {
 
     private static final AmazonSQSClient client = new AmazonSQSClient();
 
+    static {
+        Region region = Regions.getCurrentRegion();
+
+        if (region != null)
+            client.setRegion(region);
+    }
+
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Override public void run() {
+
+
         // get the queue
         String queueUrl = client.getQueueUrl(StatsMain.config.getProperty("application.stats-queue")).getQueueUrl();
 
