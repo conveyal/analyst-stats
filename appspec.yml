@@ -6,7 +6,7 @@ version: 0.0
 
 files:
   - source: analyst-stats.jar
-    destination: /opt/analyst-stats.jar
+    destination: /opt
 
 hooks:
   ApplicationStart:
