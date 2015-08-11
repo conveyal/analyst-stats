@@ -20,10 +20,12 @@ before_deploy:
   # tests have already been run
   - mvn package -DskipTests
   - mv target/analyst-stats.jar shaded/
+  - cd shaded
   - cp -r ../scripts .
   - cp ../appspec.yml .
   - mkdir ../deploy
-  - zip -r "../deploy/analyst-stats-${TRAVIS_BRANCH}.zip" *
+  - zip -r "../deploy/analyst-stats-${TRAVIS_BRANCH}.zip"  *
+  - cd ..
 
 # Deploy artifacts to S3
 deploy:
