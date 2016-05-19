@@ -7,13 +7,6 @@ jdk:
 # Run on container based infrastructure (allows caching &c.)
 sudo: false
 
-# We need to build OTP off a specific branch
-install:
-  - git clone --depth 1 --branch bootstrap https://github.com/opentripplanner/OpenTripPlanner.git
-  - cd OpenTripPlanner
-  - mvn package install -DskipTests
-  - cd ..
-
 # Deploy just the shaded jar, put it in a folder by itself with an appropriate name
 before_deploy:
   - mkdir shaded
